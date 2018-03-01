@@ -1,6 +1,3 @@
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
 def main():
     n=input("Enter a value for n >= 0: ")
