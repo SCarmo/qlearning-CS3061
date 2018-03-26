@@ -1,6 +1,8 @@
+#! python
+
 
 def main():
-    n=input("Enter a value for n >= 0: ")
+    n = input("Enter a value for n >= 0: ")
     while n < 0:
         n=input("Nice try, go again!: ")
     global gamma
@@ -8,9 +10,10 @@ def main():
     while gamma >= 1 or gamma <= 0:
         gamma = input("Nice try ;) Go again: ")
 
+    global the_cache
+    the_cache = []
     # pretty printing
-    print "\nFor n = {0}, G = {1}.\n".format( n, gamma)
-
+    print "\nFor n = {0}, G = {1}.\n".format(n, gamma)
     fit_exercise = q(n,'fit','exercise')
     fit_relax = q(n,'fit','relax')
     print "fit:\tExercise: {0}\tRelax: {1}\tpi: {2}".format( fit_exercise, fit_relax, "exercise" if fit_exercise >= fit_relax else "relax" )
@@ -20,14 +23,37 @@ def main():
     print "unfit:\tExercise: {0}\tRelax: {1}\tpi: {2}\n".format( unfit_exercise, unfit_relax, "exercise" if unfit_exercise >= unfit_relax else "relax")
 
 
+
+def get_val (key):
+    for item in the_cache:
+        if item[0] == key:
+            return item[1]
+
+def get_key (n,s,a):
+    return str(n) + s + a
+
+def insert(key, value):
+    the_cache.append((key, value))
+
+def in_cache(key):
+    for item in the_cache:
+        if item[0] == key:
+            return True
+    return False
+
 def v (n,s):
     return max( q(n,s,'exercise'), q(n,s,'relax') )
 
 
 def q (n,s,a):
+    key = get_key(n,s,a)
+    if in_cache(key):
+        return get_val(key)
     if n == 0:
         return q0(s,a)
-    return  q0(s,a) + ((gamma)*(p(s,a,'fit') * v(n-1,'fit') + p(s,a,'unfit') * v(n-1,'unfit')))
+    result =  q0(s,a) + ((gamma)*(p(s,a,'fit') * v(n-1,'fit') + p(s,a,'unfit') * v(n-1,'unfit')))
+    insert(key,result)
+    return result
 
 
 def q0 (s,a):
